@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState} from 'react';
 import { Mail, ArrowLeft, Key, Lock } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useAuthContext } from '../context/AuthContexts';
@@ -27,7 +27,7 @@ const ForgotPasswordForm = () => {
     const result = await resetPassword(email);
     if (result.success) {
       toast.success('Password reset instructions have been sent. You can now enter your new password.');
-      setStep('reset');
+      setStep('reset'); // Change step to reset password
     } else {
       toast.error(result.error || 'Failed to send reset instructions');
     }
@@ -59,7 +59,7 @@ const ForgotPasswordForm = () => {
       toast.success('Password changed successfully'); 
       setTimeout(() => {
         navigate('/login');
-      }, 2000);
+      }, 500);
     } else {
       toast.error(changePass.error || 'Failed to change password');
     }
