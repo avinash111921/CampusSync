@@ -13,7 +13,7 @@ const router = Router();
 
 router.route("/add").post(adminAuth,addCourse);
 router.route("/remove/:courseId").delete(adminAuth,removeCourse);
-router.route("/all").get(adminAuth,getAllCourses);
+router.route("/all").get(getAllCourses);
 router.route("/get/:courseId").get(getCourse);
 router.route("/update/:courseId").post(adminAuth,updateCourse);
 

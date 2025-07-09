@@ -18,7 +18,7 @@ const router = Router();
 
 router.route("/register").post(adminAuth,registerStudent);
 router.route("/get/:scholarId").get(getStudent);
-router.route("/all").get(adminAuth,getAllStudents);
+router.route("/all").get(getAllStudents);
 router.route("/update/:scholarId").post(adminAuth,updateStudentProfile);
 router.route("/delete/:scholarId").delete(adminAuth,deleteStudent);
 router.route("/enroll/:scholarId").post(adminAuth,enrollStudentInCourse);
