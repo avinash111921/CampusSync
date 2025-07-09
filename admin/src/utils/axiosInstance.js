@@ -6,8 +6,8 @@ export const axiosInstance = axios.create({
     baseURL: `${backendURL}/api/v1`,
     headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json'
     },
-    withCredentials: true,
 });
 
 
@@ -15,7 +15,7 @@ axiosInstance.interceptors.request.use(
     (config) => {
         const adminToken = localStorage.getItem('adminToken');
         if (adminToken) {
-            config.headers['Authorization'] = `Bearer ${adminToken}`;
+            config.headers.Authorization = `Bearer ${adminToken}`;
         }
         return config;
     },
