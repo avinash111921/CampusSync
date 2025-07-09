@@ -4,7 +4,7 @@ import ApiError from "../utils/ApiError.js";
 export const adminAuth = async (req,_,next) =>{
     try {
 
-        const token = req.headers["Authorization"]?.replace("Bearer ", "") || req.cookies?.adminToken;
+        const token = req.header("Authorization")?.replace("Bearer ", "") || req.cookies?.adminToken;
         if (!token) {
             throw new ApiError(
                 401,
