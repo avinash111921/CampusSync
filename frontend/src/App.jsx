@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom'; 
+import { Routes, Route, Navigate } from 'react-router-dom';
 import LoginForm from './components/LoginForm.jsx';
 import Navbar from './components/Navbar.jsx';
 import Sidebar from './components/Sidebar.jsx';
@@ -8,20 +8,13 @@ import GradesContent from './pages/GradesContent.jsx';
 import ProfileContent from './components/ProfileContent.jsx';
 import { useAuthContext } from './context/AuthContexts.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
-import ForgotPasswordForm from './components/ForgotPasswordForm.jsx';
+import ForgotPassword from './components/ForgotPassword.jsx'; // Updated import
+import ResetPassword from './components/RestPassword.jsx';   // New import
 import SignupForm from './components/SignupForm.jsx';
 
 const App = () => {
-  const { isLogin, isloading } = useAuthContext();
+  const { isLogin } = useAuthContext();
 
-  if (isloading) {
-    // Show loading screen while checking token and user
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <p className="text-gray-600 text-lg animate-pulse">Loading...</p>
-      </div>
-    );
-  }
 
   if (!isLogin) {
     // Show auth routes if not logged in
@@ -30,7 +23,8 @@ const App = () => {
           <Routes>
             <Route path="/login" element={<LoginForm />} />
             <Route path="/signup" element={<SignupForm />} />
-            <Route path="/forgot-password" element={<ForgotPasswordForm />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
       </div>

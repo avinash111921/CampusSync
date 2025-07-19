@@ -135,6 +135,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Updated resetPassword function - now returns success/error object consistently
   const resetPassword = async (email) => {
     setLoading(true);
     try {
@@ -142,8 +143,9 @@ export const AuthProvider = ({ children }) => {
       toast.success("Reset link sent. Check your email.");
       return { success: true };
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to send reset link");
-      return { success: false };
+      const errorMessage = error.response?.data?.message || "Failed to send reset link";
+      toast.error(errorMessage);
+      return { success: false, error: errorMessage };
     } finally {
       setLoading(false);
     }
@@ -156,8 +158,9 @@ export const AuthProvider = ({ children }) => {
       toast.success("Password changed successfully");
       return { success: true };
     } catch (error) {
-      toast.error(error.response?.data?.message || "Password change failed");
-      return { success: false, error: error.response?.data?.message };
+      const errorMessage = error.response?.data?.message || "Password change failed";
+      toast.error(errorMessage);
+      return { success: false, error: errorMessage };
     } finally {
       setLoading(false);
     }
