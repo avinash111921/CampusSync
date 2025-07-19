@@ -24,6 +24,7 @@ export const verifyJWT = AsyncHandler(async(req,_,next) => {
         req.student = student;
         next();
     } catch (error) {
+        console.log("❌ JWT Error:", error.message); // Debug log
         throw new ApiError(401, "Unauthorized: Invalid token");
     }
 })

@@ -9,7 +9,7 @@ const generateAccessAndRefereshToken = async (userId) => {
   try {
     const user = await User.findById(userId);
     if (!user) {
-      throw ApiError(401, "user not found");
+      throw new ApiError(401, "user not found");
     }
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
@@ -53,8 +53,6 @@ const generateAccessAndRefereshToken = async (userId) => {
   });
 
   const { accessToken, refreshToken } = await generateAccessAndRefereshToken(user._id);
-  user.refreshToken = refreshToken;
-  await user.save();
 
   const safeUser = await User.findById(user._id).select("-password -refreshToken");
 
@@ -117,6 +115,10 @@ const loginUser = AsyncHandler(async (req,res) => {
         throw new ApiError(400,"Email or Scholar ID is required");
     }
 
+    if (!password) {
+        throw new ApiError(400, "Password is required");
+    }
+
     const user = await User.findOne({
         $or: [
             { email },
@@ -135,11 +137,11 @@ const loginUser = AsyncHandler(async (req,res) => {
 
     const { accessToken, refreshToken } = await generateAccessAndRefereshToken(user._id);
 
-    user.refreshToken = refreshToken;
-    await user.save();
-
-
-    const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
+    const loggedInUser = await User.findByIdAndUpdate(
+        user._id,
+        { refreshToken },
+        { new: true }
+    ).select("-password -refreshToken");
 
     const options = {
         httpOnly : true,
@@ -151,9 +153,14 @@ const loginUser = AsyncHandler(async (req,res) => {
         .cookie("accessToken", accessToken, options)
         .cookie("refreshToken", refreshToken, options)
         .json(
-            new ApiResponse(200, { user: loggedInUser, accessToken, refreshToken }, "User logged in successfully")
+            new ApiResponse(200, { 
+                user: loggedInUser, 
+                accessToken, 
+                refreshToken 
+            }, 
+            "User logged in successfully")
         );
-})
+});
 
 const logoutUser = AsyncHandler(async (req,res) => {
     await User.findOneAndUpdate(
@@ -204,13 +211,13 @@ const refreshAccessToken = AsyncHandler(async (req,res) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
         };
-        const { accessToken, newRefreshToken } = await generateAccessAndRefereshToken(user._id);
+        const { accessToken, refreshToken } = await generateAccessAndRefereshToken(user._id);
 
         return res  
             .status(200)
             .cookie("accessToken", accessToken, options)
-            .cookie("refreshToken", newRefreshToken, options)
-            .json(new ApiResponse(200, { accessToken, refreshToken:newRefreshToken }, "Access token refreshed successfully"));
+            .cookie("refreshToken", refreshToken, options)
+            .json(new ApiResponse(200, { accessToken, refreshToken }, "Access token refreshed successfully"));
     } catch (error) {
         throw new ApiError(401, "Invalid refresh token");
     }
