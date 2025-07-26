@@ -63,10 +63,9 @@ const generateAccessAndRefereshToken = async (userId) => {
 
   return res
     .status(201)
-    .cookie("accessToken", accessToken, options)
     .cookie("refreshToken", refreshToken, options)
     .json(
-      new ApiResponse(201, { user: safeUser, accessToken, refreshToken }, "User registered successfully")
+      new ApiResponse(201, { user: safeUser, accessToken}, "User registered successfully")
     );
 });
 
@@ -150,13 +149,11 @@ const loginUser = AsyncHandler(async (req,res) => {
 
     return res
         .status(200)
-        .cookie("accessToken", accessToken, options)
         .cookie("refreshToken", refreshToken, options)
         .json(
             new ApiResponse(200, { 
                 user: loggedInUser, 
                 accessToken, 
-                refreshToken 
             }, 
             "User logged in successfully")
         );
@@ -181,7 +178,6 @@ const logoutUser = AsyncHandler(async (req,res) => {
     }
     return res
         .status(200)
-        .clearCookie("accessToken", options)
         .clearCookie("refreshToken", options)
         .json(new ApiResponse(200, {}, "User logged out successfully"));
 })
@@ -215,9 +211,8 @@ const refreshAccessToken = AsyncHandler(async (req,res) => {
 
         return res  
             .status(200)
-            .cookie("accessToken", accessToken, options)
             .cookie("refreshToken", refreshToken, options)
-            .json(new ApiResponse(200, { accessToken, refreshToken }, "Access token refreshed successfully"));
+            .json(new ApiResponse(200, { accessToken}, "Access token refreshed successfully"));
     } catch (error) {
         throw new ApiError(401, "Invalid refresh token");
     }
